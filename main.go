@@ -15,16 +15,10 @@ func main() {
 		fmt.Println("Erro ao configurar repositórios")
 		return
 	}
-	teamList, err := teamRepo.FindAll(); if err != nil {
+	teamList, err := teamRepo.FindByIsFollowing(true); if err != nil {
 		fmt.Println("Erro ao buscar times:", err)
 		return
 	}
-
-	fmt.Println("Times cadastrados:")
-	for _, t := range teamList {
-		fmt.Printf("Time: %s - %s\n", t.Id(), t.Name())
-	}
-	fmt.Println("================================")
 
 	matchMap := make(map[string]*match.Match)
 	newTeamMap := make(map[string]*team.Team)
@@ -45,24 +39,15 @@ func main() {
 		}
 	}
 
-	fmt.Println("Times cadastrados part 2:")
 	newTeamList := make([]*team.Team, 0, len(newTeamMap))
 	for _, t := range newTeamMap {
 		newTeamList = append(newTeamList, t)
 	}
 	teamRepo.SaveMany(newTeamList)
-	teamList2, err := teamRepo.FindAll(); if err != nil {
-		fmt.Println("Erro ao buscar times:", err)
-		return
-	}
-	for _, t := range teamList2 {
-		fmt.Printf("Time: %s - %s\n", t.Id(), t.Name())
-	}
-	fmt.Println("================================")
 
 	fmt.Println("Confrontos agendados:")
 	for _, m := range matchMap {
-		fmt.Printf("%s vs %s: %s\n", m.TeamA().Name(), m.TeamB().Name(), m.Date().Format("02/01/2006 15:04"))
+		fmt.Printf("%s - %s vs %s: %s\n", m.TournamentName(), m.TeamA().Name(), m.TeamB().Name(), m.BeginAt().Format("02/01/2006 15:04"))
 	}
 }
 
@@ -75,15 +60,15 @@ func settings() (team.TeamRepository, match.MatchRepository) {
 		fmt.Println("Erro ao criar repositório de partidas:", err)
 		return nil, nil
 	}
-	t1, err := team.NewTeam("1", "Fúria"); if err != nil {
+	t1, err := team.NewTeam(team.NewTeamInput{Name: "Fúria", ExternalId: 1, IsFollowing: true}); if err != nil {
 		fmt.Println("Erro ao criar time:", err)
 		return nil, nil
 	}
-	t2, err := team.NewTeam("2", "Vitality"); if err != nil {
+	t2, err := team.NewTeam(team.NewTeamInput{Name: "Vitality", ExternalId: 2, IsFollowing: false}); if err != nil {
 		fmt.Println("Erro ao criar time:", err)
 		return nil, nil
 	}
-	m, err := match.NewMatch("1", t1, t2, time.Now()); if err != nil {
+	m, err := match.NewMatch(match.NewMatchInput{TeamA: t1, TeamB: t2, BeginAt: time.Now(), ExternalId: 100, TournamentName: "Major 2026/2"}); if err != nil {
 		fmt.Println("Erro ao criar confronto:", err)
 		return nil, nil
 	}

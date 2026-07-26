@@ -29,6 +29,12 @@ func (t *teamMemoryRepository) FindById(id string) (*team.Team, error) {
 	return nil, nil
 }
 
-func (t *teamMemoryRepository) FindAll() ([]*team.Team, error) {
-	return t.list, nil
+func (t *teamMemoryRepository) FindByIsFollowing(isFollowing bool) ([]*team.Team, error) {
+	var result []*team.Team
+	for _, team := range t.list {
+		if team.IsFollowing() == isFollowing {
+			result = append(result, team)
+		}
+	}
+	return result, nil
 }

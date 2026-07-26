@@ -1,29 +1,54 @@
 package team
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Team struct {
 	id string
 	name string
+	externalId int
+	isFollowing bool
 	createdAt time.Time
 	updatedAt time.Time
 }
 
-func NewTeam(id string, name string) (*Team, error) {
+type NewTeamInput struct {
+	Name string
+	ExternalId  int
+	IsFollowing bool
+}
+
+type RestoreTeamInput struct {
+	Id string
+	Name string
+	ExternalId int
+	IsFollowing bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+func NewTeam(input NewTeamInput) (*Team, error) {
 	return &Team{
-		id: id,
-		name: name,
+		id: uuid.New().String(),
+		name: input.Name,
+		externalId: input.ExternalId,
+		isFollowing: input.IsFollowing,
 		createdAt: time.Now(),
 		updatedAt: time.Now(),
 	}, nil
 }
 
-func RestoreTeam(id string, name string, createdAt time.Time, updatedAt time.Time) (*Team, error) {
+func RestoreTeam(input RestoreTeamInput) (*Team, error) {
 	return &Team{
-		id: id,
-		name: name,
-		createdAt: createdAt,
-		updatedAt: updatedAt,
+		id: input.Id,
+		name: input.Name,
+		externalId: input.ExternalId,
+		isFollowing: input.IsFollowing,
+		createdAt: input.CreatedAt,
+		updatedAt: input.UpdatedAt,
 	}, nil
 }
 
@@ -33,6 +58,14 @@ func (t *Team) Id() string {
 
 func (t *Team) Name() string {
 	return t.name
+}
+
+func (t *Team) ExternalId() int {
+	return t.externalId
+}
+
+func (t *Team) IsFollowing() bool {
+	return t.isFollowing
 }
 
 func (t *Team) CreatedAt() time.Time {
