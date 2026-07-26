@@ -2,11 +2,18 @@
 
 ## Funcionalidades planejadas
 
-1. Buscar times do banco de dados
-2. Buscar confrontos de uma API externa
-3. Cadastrar times novos no banco quando não existirem
-4. Validar se os confrontos já estão no banco
-5. Cadastrar confrontos novos no banco
+- [x] Buscar times do banco de dados
+- [ ] Buscar confrontos de uma API externa
+- [x] Cadastrar times novos no banco quando não existirem
+- [ ] Validar se os confrontos já estão no banco
+- [ ] Cadastrar confrontos novos no banco
+
+## Infraestrutura
+
+- [ ] Substituir repositório em memória por banco de dados
+- [ ] Implementar conexão com API externa (http client)
+- [ ] Adicionar eventos de domínio
+- [ ] Trigger via consumer (mensageria) ou http request
 
 ## Estrutura atual
 

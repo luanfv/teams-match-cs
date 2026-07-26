@@ -20,17 +20,45 @@ func main() {
 		return
 	}
 
+	fmt.Println("Times cadastrados:")
+	for _, t := range teamList {
+		fmt.Printf("Time: %s - %s\n", t.Id(), t.Name())
+	}
+	fmt.Println("================================")
+
 	matchMap := make(map[string]*match.Match)
+	newTeamMap := make(map[string]*team.Team)
 	for _, t := range teamList {
 		ml, err := matchRepo.FindByTeamId(t.Id())
-		if err != nil {
+		if err != nil {			
 			fmt.Println("Erro ao buscar partidas:", err)
 			return
 		}
 		for _, m := range ml {
 			matchMap[m.Id()] = m
+			if (t.Id() != m.TeamA().Id()) {
+				newTeamMap[m.TeamA().Id()] = m.TeamA()
+			}
+			if (t.Id() != m.TeamB().Id()) {
+				newTeamMap[m.TeamB().Id()] = m.TeamB()
+			}
 		}
 	}
+
+	fmt.Println("Times cadastrados part 2:")
+	newTeamList := make([]*team.Team, 0, len(newTeamMap))
+	for _, t := range newTeamMap {
+		newTeamList = append(newTeamList, t)
+	}
+	teamRepo.SaveMany(newTeamList)
+	teamList2, err := teamRepo.FindAll(); if err != nil {
+		fmt.Println("Erro ao buscar times:", err)
+		return
+	}
+	for _, t := range teamList2 {
+		fmt.Printf("Time: %s - %s\n", t.Id(), t.Name())
+	}
+	fmt.Println("================================")
 
 	fmt.Println("Confrontos agendados:")
 	for _, m := range matchMap {
